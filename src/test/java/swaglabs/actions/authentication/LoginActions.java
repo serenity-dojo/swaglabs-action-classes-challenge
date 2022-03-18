@@ -11,4 +11,8 @@ public class LoginActions extends UIInteractions {
         $("#password").sendKeys(password);
         $("#login-button").click();
     }
+
+    public String errorMessage() {
+        return $("[data-test='error']").getText();
+    }
 }

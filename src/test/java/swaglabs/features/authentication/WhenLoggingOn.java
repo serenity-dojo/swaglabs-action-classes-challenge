@@ -23,4 +23,12 @@ public class WhenLoggingOn {
 
         assertThat(pageHeader.title()).isEqualToIgnoringCase("Products");
     }
+
+    @Test
+    public void withInvalidCredentials() {
+        login.withCredentials("standard_user","wrong_password");
+
+        assertThat(login.errorMessage()).contains("Username and password do not match");
+    }
+
 }
