@@ -21,17 +21,17 @@ public class WhenLoggingOn {
 
     @Test
     public void withValidCredentials() {
-        login.withCredentials("standard_user","secret_sauce");
+        login.withCredentials("standard_user", "secret_sauce");
 
         assertThat(pageHeader.title()).isEqualToIgnoringCase("Products");
     }
 
     @ParameterizedTest
-    @CsvSource({
-            "standard_user  , wrong_password    , Username and password do not match",
-            "locked_out_user, secret_sauce      , Sorry, this user has been locked out",
-            "standard_user  , ''                , Password is required",
-            "''             , secret_sauce      , Username is required"
+    @CsvSource(delimiterString = "|", value = {
+            "standard_user  | wrong_password    | Username and password do not match",
+            "locked_out_user| secret_sauce      | Sorry, this user has been locked out",
+            "standard_user  | ''                | Password is required",
+            "''             | secret_sauce      | Username is required"
     })
     public void withInvalidCredentials(String username, String password, String errorMessage) {
         login.withCredentials(username, password);
