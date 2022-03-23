@@ -4,6 +4,8 @@ import net.serenitybdd.junit5.SerenityJUnit5Extension;
 import net.thucydides.core.annotations.Steps;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import swaglabs.actions.authentication.LoginActions;
 import swaglabs.actions.common.PageHeader;
 
@@ -24,11 +26,17 @@ public class WhenLoggingOn {
         assertThat(pageHeader.title()).isEqualToIgnoringCase("Products");
     }
 
-    @Test
-    public void withInvalidCredentials() {
-        login.withCredentials("standard_user","wrong_password");
+    @ParameterizedTest
+    @CsvSource({
+            "standard_user  , wrong_password    , Username and password do not match",
+            "locked_out_user, secret_sauce      , Sorry, this user has been locked out",
+            "standard_user  , ''                , Password is required",
+            "''             , secret_sauce      , Username is required"
+    })
+    public void withInvalidCredentials(String username, String password, String errorMessage) {
+        login.withCredentials(username, password);
 
-        assertThat(login.errorMessage()).contains("Username and password do not match");
+        assertThat(login.errorMessage()).contains(errorMessage);
     }
 
 }
