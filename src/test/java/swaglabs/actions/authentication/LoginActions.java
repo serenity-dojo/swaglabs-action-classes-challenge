@@ -15,4 +15,9 @@ public class LoginActions extends UIInteractions {
     public String errorMessage() {
         return $("[data-test='error']").getText();
     }
+
+    @Step("Log in as a standard user")
+    public void asAStandardUser() {
+        withCredentials("standard_user","secret_sauce");
+    }
 }
