@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import swaglabs.actions.authentication.LoginActions;
 import swaglabs.actions.catalog.CatalogActions;
+import swaglabs.actions.catalog.ProductInfo;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,7 +28,7 @@ class WhenBrowsingTheCatalog {
     }
 
     @Test
-    void shouldSeeAllInventoryProduct() {
+    void shouldSeeAllInventoryProducts() {
         assertThat(catalog.productTitles()).contains(
                 "Sauce Labs Backpack",
                 "Sauce Labs Bolt T-Shirt",
@@ -45,12 +48,7 @@ class WhenBrowsingTheCatalog {
 
     @Test
     void eachProductShouldHaveADifferentImage() {
-        assertThat(catalog.productImages()).doesNotHaveDuplicates();
+        List<String> productImages = catalog.products().stream().map(ProductInfo::image).toList();
+        assertThat(productImages).doesNotHaveDuplicates();
     }
-
-    @Test
-    void productsCanBeSortedByDifferentCriteria() {
-
-    }
-
 }
