@@ -12,7 +12,7 @@ import swaglabs.actions.common.PageHeader;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @ExtendWith(SerenityJUnit5Extension.class)
-public class WhenLoggingOn {
+class WhenLoggingOn {
 
     @Steps
     LoginActions login;
@@ -20,7 +20,7 @@ public class WhenLoggingOn {
     PageHeader pageHeader;
 
     @Test
-    public void withValidCredentials() {
+    void withValidCredentials() {
         login.withCredentials("standard_user", "secret_sauce");
 
         assertThat(pageHeader.title()).isEqualToIgnoringCase("Products");
@@ -33,7 +33,7 @@ public class WhenLoggingOn {
             "standard_user  | ''                | Password is required",
             "''             | secret_sauce      | Username is required"
     })
-    public void withInvalidCredentials(String username, String password, String errorMessage) {
+    void withInvalidCredentials(String username, String password, String errorMessage) {
         login.withCredentials(username, password);
 
         assertThat(login.errorMessage()).contains(errorMessage);

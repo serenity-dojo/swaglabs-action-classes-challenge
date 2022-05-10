@@ -5,11 +5,11 @@ In this tutorial, you will build a complete set of end-to-end acceptance tests r
 ## Getting Started - Create a starter project
 Start your project by creating a new Github repository using the [serenity-junit-starter](https://github.com/serenity-bdd/serenity-junit-starter) template project.
 
-![The Serenity JUnit Starter template project](/images/use-this-template.png)
+![The Serenity JUnit Starter template project](images/use-this-template.png)
 
 Click on the "Use This Template" button and create your own skeleton project.
 
-![Create a new project using the template project](/images/new-project-from-template.png)
+![Create a new project using the template project](images/new-project-from-template.png)
 
 Load this project into your IDE (IntelliJ is recommended). Delete the sample test package in `src/test/java/starter` and create a new package for your project called `src/test/java/swaglabs`. Inside this package, create two nested packages: `features`, for your test cases, and `actions`, for your test automation code.
 
@@ -40,11 +40,11 @@ headless.mode = false
 
 We will start by testing the application login page.
 
-![](/images/login-page.png)
+![](images/login-page.png)
 
 The goal will be to log in using the `standard_user` username and check that the product list is displayed.
 
-![](/images/inventory-page.png)
+![](images/inventory-page.png)
 
 ### Step 1 - the skeleton test
 
@@ -150,7 +150,7 @@ Now run the test again to make sure it works.
 
 Next we will write a test that checks what happens if we enter the wrong password. This will result in an error message on the login page like the following:
 
-![](/images/login-error.png)
+![](images/login-error.png)
 
 To test this behaviour, we can reuse our `login` action class in this test, so the first part of the test will be similar to our first test:
 
@@ -211,7 +211,7 @@ Note how we don't need to add any new test code - we are just reusing existing m
 
 Let's see what happens when we get to the product page after logging in. The product page looks like this:
 
-![](/images/inventory-page.png)
+![](images/inventory-page.png)
 
 The next thing we need to check is that all of the expected products appear on the catalog page. In a real application, we might compare the products with the ones we expect from an API or database query, but here we can assume they are constant.
 
@@ -341,3 +341,92 @@ void eachProductShouldHaveADifferentImage() {
     assertThat(productImages).doesNotHaveDuplicates();
 }
 ```
+
+## Lesson 5 - Adding an item to the cart
+
+For the next test, we will try adding some items from the catalog to the shopping cart. Create a new `cart` package, and in it create a test class called `WhenAddingItemsToTheCart`. 
+
+Start by creating a new test class, `WhenAddingItemsToTheCart`, in a new package called `cart` (underneath the `features` package). 
+
+### Checking the initial cart count
+The first test should simply check that the shopping cart badge is initially empty. 
+
+![The shopping cart badge](images/badge.png)
+
+Use a Page Component class to represent the shopping cart icon element on the page. The test could look something like this:
+
+```java
+    ShoppingCartIcon shoppingCartIcon;
+
+    @Test
+    @DisplayName("the cart should initially be empty")
+    void cartShouldInitiallyBeEmpty() {
+        assertThat(shoppingCartIcon.itemCount()).isEmpty();
+    }
+```
+
+The `ShoppingCartIcon` class should be a Page Component class, and so should extend the `et.serenitybdd.core.pages.PageComponent` class:
+```java
+public class ShoppingCartIcon extends PageComponent {
+}
+```
+
+The `itemCount()` method should return a String (because it could be empty). One possible implementation would be the following:
+```java
+public class ShoppingCartIcon extends PageComponent {
+    public String itemCount() {
+        return $(".shopping_cart_link").getText();
+    }
+}
+```
+
+### Adding an item
+
+The next test will check that the shopping cart badge is updated with the right number of items when you add an item to the cart. Write a test that will click on the "Add to cart" button of one of the catalog items, and check that the number in the badge updates to one.
+
+In addition to the `ShoppingCartIcon` component we just created, we will also need an action class to add an Action Class to click on the "Add to cart" button of the product we want. The test could look like this one:
+
+```java
+    @Steps
+    CartActions cart;
+
+    @Test
+    @DisplayName("the item count should represent the number of items currently in the cart")
+    void addingAnItemShouldUpdateTheItemCount() {
+        cart.addItem("Sauce Labs Backpack");
+        assertThat(shoppingCartIcon.itemCount()).isEqualTo("1");
+    }
+```
+
+The `addItem()` method needs to locate the right "Add to cart" button. Inspect the page structure and see if you can figure out how to locate a given "Add to cart" button:
+
+![The shopping cart badge](images/add-to-cart-button.png) 
+
+One way would be to use Serenity Page Elements. Page Elements let you locate elements that match certain conditions, including what text they contain, and what other elements they are inside. In this case, each  product is represented by a `div` with the `inventory_item` class. For example we could locate the `div` for a given product by using the following expression:
+
+```java
+PageElement.containingText(".inventory_item","Sauce Labs Backpack")))
+```
+
+The "Add to cart" button is an HTML `button` element. We can match any "add to cart" button with the following expression:
+```java
+Button.withText("Add to cart")
+```
+
+But if we want the button that is inside a particular product `div` element, we can use the `inside()` method. So the final `addItem()` method will look like this:
+
+```java
+public class CartActions extends UIInteractions {
+
+    @Step
+    public void addItem(String itemName) {
+        $(Button.withText("Add to cart")
+                .inside(PageElement.containingText(".inventory_item",itemName)))
+                .click();
+    }
+}
+```
+
+
+
+
