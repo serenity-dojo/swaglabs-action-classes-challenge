@@ -5,11 +5,11 @@ In this tutorial, you will build a complete set of end-to-end acceptance tests r
 ## Getting Started - Create a starter project
 Start your project by creating a new Github repository using the [serenity-junit-starter](https://github.com/serenity-bdd/serenity-junit-starter) template project.
 
-![The Serenity JUnit Starter template project](/images/use-this-template.png)
+![The Serenity JUnit Starter template project](images/use-this-template.png)
 
 Click on the "Use This Template" button and create your own skeleton project.
 
-![Create a new project using the template project](/images/new-project-from-template.png)
+![Create a new project using the template project](images/new-project-from-template.png)
 
 Load this project into your IDE (IntelliJ is recommended). Delete the sample test package in `src/test/java/starter` and create a new package for your project called `src/test/java/swaglabs`. Inside this package, create two nested packages: `features`, for your test cases, and `actions`, for your test automation code.
 
@@ -40,11 +40,11 @@ headless.mode = false
 
 We will start by testing the application login page.
 
-![](/images/login-page.png)
+![](images/login-page.png)
 
 The goal will be to log in using the `standard_user` username and check that the product list is displayed.
 
-![](/images/inventory-page.png)
+![](images/inventory-page.png)
 
 ### Step 1 - the skeleton test
 
@@ -150,23 +150,23 @@ Now run the test again to make sure it works.
 
 Next we will write a test that checks what happens if we enter the wrong password. This will result in an error message on the login page like the following:
 
-![](/images/login-error.png)
+![](images/login-error.png)
 
 To test this behaviour, we can reuse our `login` action class in this test, so the first part of the test will be similar to our first test:
 
 ```java
 @Test
 public void withInvalidCredentials() {
-    login.withCredentials("standard_user","wrong_password");
-}
+        login.withCredentials("standard_user","wrong_password");
+        }
 ```
 
 Next, we need to check the error message that appears. Add a method to the `LoginActions` class to return the text of this message. A sample implementation could look like this:
 
 ```java
 public String errorMessage() {
-    return $("[data-test='error']").getText();
-}
+        return $("[data-test='error']").getText();
+        }
 ```
 
 Now update the test to check the error message:
@@ -174,10 +174,10 @@ Now update the test to check the error message:
 ```java
 @Test
 public void withInvalidCredentials() {
-    login.withCredentials("standard_user","wrong_password");
+        login.withCredentials("standard_user","wrong_password");
 
-    assertThat(login.errorMessage()).contains("Username and password do not match");
-}
+        assertThat(login.errorMessage()).contains("Username and password do not match");
+        }
 ```
 
 ## Lesson 3 - Implement a data-driven test
@@ -199,10 +199,10 @@ A JUnit 5 parameterised test to do this might look like this:
         "''             | secret_sauce      | Username is required"
 })
 public void withInvalidCredentials(String username, String password, String errorMessage) {
-    login.withCredentials(username, password);
+        login.withCredentials(username, password);
 
-    assertThat(login.errorMessage()).contains(errorMessage);
-}
+        assertThat(login.errorMessage()).contains(errorMessage);
+        }
 ```
 
 Note how we don't need to add any new test code - we are just reusing existing methods.
@@ -211,7 +211,7 @@ Note how we don't need to add any new test code - we are just reusing existing m
 
 Let's see what happens when we get to the product page after logging in. The product page looks like this:
 
-![](/images/inventory-page.png)
+![](images/inventory-page.png)
 
 The next thing we need to check is that all of the expected products appear on the catalog page. In a real application, we might compare the products with the ones we expect from an API or database query, but here we can assume they are constant.
 
@@ -241,8 +241,8 @@ Now let's add the `asAStandardUser()` method to the `LoginActions` class, so we 
 ```java
 public class LoginActions extends UIInteractions {
     .
-    .
-    .
+            .
+            .
     @Step("Log in as a standard user")
     public void asAStandardUser() {
         withCredentials("standard_user","secret_sauce");
@@ -255,15 +255,15 @@ Next, try to implement the `shouldSeeAllInventoryProducts()` method, using an ac
 ```java
 @Test
 void shouldSeeAllInventoryProducts() {
-    assertThat(catalog.productTitles()).contains(
-            "Sauce Labs Backpack",
-            "Sauce Labs Bolt T-Shirt",
-            "Sauce Labs Onesie",
-            "Sauce Labs Bike Light",
-            "Sauce Labs Fleece Jacket",
-            "Test.allTheThings() T-Shirt (Red)"
-    );
-}
+        assertThat(catalog.productTitles()).contains(
+        "Sauce Labs Backpack",
+        "Sauce Labs Bolt T-Shirt",
+        "Sauce Labs Onesie",
+        "Sauce Labs Bike Light",
+        "Sauce Labs Fleece Jacket",
+        "Test.allTheThings() T-Shirt (Red)"
+        );
+        }
 ```
 
 In the `CatalogActions` class, you could use the `findAll()` or `$$()` method to find al of the matching product names on the page:
@@ -289,14 +289,14 @@ The `products()` method in the `CatalogActions` class should read all the produc
 
 ```java
 public List<ProductInfo> products() {
-    return findAll(".inventory_item_description")
-            .map(item -> {
-               String title = item.findBy(".inventory_item_name").getText();
-               String description = item.findBy(".inventory_item_desc").getText();
-               double price = Double.parseDouble(item.findBy(".inventory_item_price").getText().replace("$",""));
-               return new ProductInfo(title, description, price);
-            });
-}
+        return findAll(".inventory_item_description")
+        .map(item -> {
+        String title = item.findBy(".inventory_item_name").getText();
+        String description = item.findBy(".inventory_item_desc").getText();
+        double price = Double.parseDouble(item.findBy(".inventory_item_price").getText().replace("$",""));
+        return new ProductInfo(title, description, price);
+        });
+        }
 ```
 
 Finally, the test itself could use the AssertJ `allMatch()` method to check the properties of each product:
@@ -304,10 +304,10 @@ Finally, the test itself could use the AssertJ `allMatch()` method to check the 
 ```java
 @Test
 void eachProductShouldHaveADescriptionAndAPrice() {
-    assertThat(catalog.products()).allMatch(
-            item -> !item.description().isEmpty() && !item.title().isEmpty() && item.price() > 0
-    );
-}
+        assertThat(catalog.products()).allMatch(
+        item -> !item.description().isEmpty() && !item.title().isEmpty() && item.price() > 0
+        );
+        }
 ```
 
 Our last test on this page should check that each image is unique. We could do this by building on the ProductInfo record, so that it also contains the image of the product, e.g.
@@ -320,16 +320,16 @@ Try to modify the `products()` method to extract the image as well as the other 
 
 ```java
 public List<ProductInfo> products() {
-    return findAll(".inventory_item_description")
-            .map(item -> {
-               String title = item.findBy(".inventory_item_name").getText();
-               String description = item.findBy(".inventory_item_desc").getText();
-               String image = item.findBy(".img.inventory_item_img").getAttribute("src");
-               double price = Double.parseDouble(item.findBy(".inventory_item_price").getText().replace("$",""));
+        return findAll(".inventory_item_description")
+        .map(item -> {
+        String title = item.findBy(".inventory_item_name").getText();
+        String description = item.findBy(".inventory_item_desc").getText();
+        String image = item.findBy(".img.inventory_item_img").getAttribute("src");
+        double price = Double.parseDouble(item.findBy(".inventory_item_price").getText().replace("$",""));
 
-               return new ProductInfo(title, description, price, image);
-            });
-}
+        return new ProductInfo(title, description, price, image);
+        });
+        }
 ```
 
 Now, write a test that checks whether each image on the page is unique. One possiblity might be the following:
@@ -337,7 +337,127 @@ Now, write a test that checks whether each image on the page is unique. One poss
 ```java
 @Test
 void eachProductShouldHaveADifferentImage() {
-    List<String> productImages = catalog.products().stream().map(ProductInfo::image).toList();
-    assertThat(productImages).doesNotHaveDuplicates();
+        List<String> productImages = catalog.products().stream().map(ProductInfo::image).toList();
+        assertThat(productImages).doesNotHaveDuplicates();
+        }
+```
+
+## Lesson 5 - Adding an item to the cart
+
+For the next test, we will try adding some items from the catalog to the shopping cart. Create a new `cart` package, and in it create a test class called `WhenAddingItemsToTheCart`.
+
+Start by creating a new test class, `WhenAddingItemsToTheCart`, in a new package called `cart` (underneath the `features` package).
+
+### Checking the initial cart count
+The first test should simply check that the shopping cart badge is initially empty.
+
+![The shopping cart badge](images/badge.png)
+
+Use a Page Component class to represent the shopping cart icon element on the page. The test could look something like this:
+
+```java
+    ShoppingCartIcon shoppingCartIcon;
+
+@Test
+@DisplayName("the cart should initially be empty")
+    void cartShouldInitiallyBeEmpty() {
+            assertThat(shoppingCartIcon.itemCount()).isEmpty();
+            }
+```
+
+The `ShoppingCartIcon` class should be a Page Component class, and so should extend the `et.serenitybdd.core.pages.PageComponent` class:
+```java
+public class ShoppingCartIcon extends PageComponent {
 }
+```
+
+The `itemCount()` method should return a String (because it could be empty). One possible implementation would be the following:
+```java
+public class ShoppingCartIcon extends PageComponent {
+    public String itemCount() {
+        return $(".shopping_cart_link").getText();
+    }
+}
+```
+
+### Adding an item
+
+The next test will check that the shopping cart badge is updated with the right number of items when you add an item to the cart. Write a test that will click on the "Add to cart" button of one of the catalog items, and check that the number in the badge updates to one.
+
+In addition to the `ShoppingCartIcon` component we just created, we will also need an action class to add an Action Class to click on the "Add to cart" button of the product we want. The test could look like this one:
+
+```java
+    @Steps
+    CartActions cart;
+
+@Test
+@DisplayName("the item count should represent the number of items currently in the cart")
+    void addingAnItemShouldUpdateTheItemCount() {
+            cart.addItem("Sauce Labs Backpack");
+            assertThat(shoppingCartIcon.itemCount()).isEqualTo("1");
+            }
+```
+
+The `addItem()` method needs to locate the right "Add to cart" button. Inspect the page structure and see if you can figure out how to locate a given "Add to cart" button:
+
+![The shopping cart badge](images/add-to-cart-button.png)
+
+One way would be to use Serenity Page Elements. Page Elements let you locate elements that match certain conditions, including what text they contain, and what other elements they are inside. In this case, each  product is represented by a `div` with the `inventory_item` class. For example we could locate the `div` for a given product by using the following expression:
+
+```java
+PageElement.containingText(".inventory_item","Sauce Labs Backpack")))
+```
+
+The "Add to cart" button is an HTML `button` element. We can match any "add to cart" button with the following expression:
+```java
+Button.withText("Add to cart")
+```
+
+But if we want the button that is inside a particular product `div` element, we can use the `inside()` method. So the final `addItem()` method will look like this:
+
+```java
+public class CartActions extends UIInteractions {
+
+    @Step
+    public void addItem(String itemName) {
+        $(Button.withText("Add to cart")
+                .inside(PageElement.containingText(".inventory_item",itemName)))
+                .click();
+    }
+}
+```
+
+## Lesson 6 - Checking the content of the shopping cart
+
+Next, write a test that adds two items to the cart, navigates to the cart, and checks that the list of items displayed matches the two items you added.
+Start with a test like the following:
+
+```java
+    @Test
+    @DisplayName("items added to the cart should appear in the cart summary")
+    void itemsAddedToTheCartShouldAppearInTheCart() {
+        cart.addItem("Sauce Labs Backpack");
+        cart.addItem("Sauce Labs Bike Light");
+
+        cart.viewCart();
+
+        assertThat(shoppingCartSummary.itemTitles()).contains("Sauce Labs Backpack", "Sauce Labs Bike Light");
+    }
+```
+
+You will need to add the `viewCart()` method to your `CartActions` class, and create a `ShoppingCartSummary` page component class to read the shopping cart items from the shopping cart summary page.
+
+Once you have done this, write a test that checks that each item displays a price. Create a `ShoppingCartItem` record class to represent each row in the table, and add an `items()` method that returns the list of shopping cart items. Your test could look something like this:
+
+```java
+    @Test
+    @DisplayName("item prices should be displayed in the shopping cart summary")
+    void itemsPricesShouldAppearInTheCart() {
+        cart.addItem("Sauce Labs Backpack");
+        cart.addItem("Sauce Labs Bike Light");
+
+        cart.viewCart();
+
+        assertThat(shoppingCartSummary.items()).allMatch(item -> item.price() > 0.0);
+    }
 ```
