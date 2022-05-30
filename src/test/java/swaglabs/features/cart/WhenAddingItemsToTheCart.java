@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import swaglabs.actions.authentication.LoginActions;
 import swaglabs.actions.cart.CartActions;
 import swaglabs.actions.cart.ShoppingCartIcon;
+import swaglabs.actions.cart.ShoppingCartSummary;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,6 +25,8 @@ class WhenAddingItemsToTheCart {
 
     // Page Components
     ShoppingCartIcon shoppingCartIcon;
+
+    ShoppingCartSummary shoppingCartSummary;
 
     @BeforeEach
     void login() {
@@ -42,4 +45,27 @@ class WhenAddingItemsToTheCart {
         cart.addItem("Sauce Labs Backpack");
         assertThat(shoppingCartIcon.itemCount()).isEqualTo("1");
     }
+
+    @Test
+    @DisplayName("items added to the cart should appear in the cart summary")
+    void itemsAddedToTheCartShouldAppearInTheCart() {
+        cart.addItem("Sauce Labs Backpack");
+        cart.addItem("Sauce Labs Bike Light");
+
+        cart.viewCart();
+
+        assertThat(shoppingCartSummary.itemTitles()).contains("Sauce Labs Backpack", "Sauce Labs Bike Light");
+    }
+
+    @Test
+    @DisplayName("item prices should be displayed in the shopping cart summary")
+    void itemsPricesShouldAppearInTheCart() {
+        cart.addItem("Sauce Labs Backpack");
+        cart.addItem("Sauce Labs Bike Light");
+
+        cart.viewCart();
+
+        assertThat(shoppingCartSummary.items()).allMatch(item -> item.price() > 0.0);
+    }
+
 }

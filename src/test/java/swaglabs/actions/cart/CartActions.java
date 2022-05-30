@@ -13,6 +13,10 @@ public class CartActions extends UIInteractions {
                 .inside(PageElement.containingText(".inventory_item",itemName)))
                 .click();
     }
+
+    public void viewCart() {
+        $(".shopping_cart_link").click();
+    }
 }
 
 

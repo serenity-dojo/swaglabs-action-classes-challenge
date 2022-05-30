@@ -427,6 +427,37 @@ public class CartActions extends UIInteractions {
 }
 ```
 
+## Lesson 6 - Checking the content of the shopping cart
 
+Next, write a test that adds two items to the cart, navigates to the cart, and checks that the list of items displayed matches the two items you added. 
+Start with a test like the following:
 
+```java
+    @Test
+    @DisplayName("items added to the cart should appear in the cart summary")
+    void itemsAddedToTheCartShouldAppearInTheCart() {
+        cart.addItem("Sauce Labs Backpack");
+        cart.addItem("Sauce Labs Bike Light");
 
+        cart.viewCart();
+
+        assertThat(shoppingCartSummary.itemTitles()).contains("Sauce Labs Backpack", "Sauce Labs Bike Light");
+    }
+```
+
+You will need to add the `viewCart()` method to your `CartActions` class, and create a `ShoppingCartSummary` page component class to read the shopping cart items from the shopping cart summary page.
+
+Once you have done this, write a test that checks that each item displays a price. Create a `ShoppingCartItem` record class to represent each row in the table, and add an `items()` method that returns the list of shopping cart items. Your test could look something like this:
+
+```java
+    @Test
+    @DisplayName("item prices should be displayed in the shopping cart summary")
+    void itemsPricesShouldAppearInTheCart() {
+        cart.addItem("Sauce Labs Backpack");
+        cart.addItem("Sauce Labs Bike Light");
+
+        cart.viewCart();
+
+        assertThat(shoppingCartSummary.items()).allMatch(item -> item.price() > 0.0);
+    }
+```
